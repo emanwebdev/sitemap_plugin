@@ -34,15 +34,11 @@
                 <div class="form-label-checkbox"><input type="checkbox" name="sitemap_cities" value="1" <?php echo (osc_get_preference('sitemap_cities', 'sitemap_plugin') ? 'checked' : ''); ?> > </div>
             	<div class="help-box"><?php _e('Please Check if you want to include Cities in your list', 'sitemap_plugin'); ?></div>
             </div>
-            </div>
-                 
-            
+            </div><!-- .form-horizontal -->
                 <input type="submit" value="<?php _e('Save changes', 'sitemap_plugin'); ?>" class="btn btn-submit" />
-            
-        </div>
     </fieldset>
 </form>
-</div>
+</div><!-- #left-side -->
 <div style="margin-top:10px">
 <form action="<?php echo osc_admin_render_plugin_url('oc-content/plugins/sitemap_plugin/admin.php'); ?>" method="post">
     <input type="hidden" name="action_specific" value="generate_sitemap" />
