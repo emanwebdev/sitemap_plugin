@@ -96,34 +96,33 @@ function ping_engines() {
 
 function generate_sitemap() {
 
-    $min = 1;
     $numurl = osc_get_preference('sitemap_number', 'sitemap_plugin');
-    $locales = osc_get_locales();
 
     $filename = osc_base_path() . 'sitemap.xml';
     @unlink($filename);
     $start_xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<?xml-stylesheet type="text/xsl" href="' . osc_base_url() .'oc-content/plugins/sitemap_plugin/xmlsitemap.xsl"?>' . PHP_EOL . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
     file_put_contents($filename, $start_xml);
     
-    // INDEX
+    // HOMEPAGE
     sitemap_add_url(osc_base_url(), date('Y-m-d'), 'always');
     
-    // Category
-    if(osc_count_categories () > 0) {
+    // Categories
+    if( osc_get_preference('sitemap_categories', 'sitemap_plugin') && osc_count_categories() > 0 ) {
     while ( osc_has_categories() ) {
         if ( osc_category_total_items() > 0 ) {
                 sitemap_add_url(osc_search_category_url(), date('Y-m-d'), 'hourly');
             	}
         if ( osc_count_subcategories() > 0 ) {
-           while ( osc_has_subcategories() ) {
+            while ( osc_has_subcategories() ) {
                 if ( osc_category_total_items() > 0 ) {
-                      	sitemap_add_url(osc_search_category_url(), date('Y-m-d'), 'hourly');
-                  }
-    	   	}
-    	}
+                    sitemap_add_url(osc_search_category_url(), date('Y-m-d'), 'hourly');
+                }
+            }
+        }
     }
     }
-    // countries
+
+    // Countries
     if( osc_get_preference('sitemap_countries', 'sitemap_plugin') ) {
     if(osc_count_list_countries() > 0) {
         while ( osc_has_list_countries() ) {
@@ -131,6 +130,7 @@ function generate_sitemap() {
          }
     }
     }
+
     // Regions
     if( osc_get_preference('sitemap_regions', 'sitemap_plugin') ) {
     if(osc_count_list_regions() > 0) {
@@ -139,6 +139,7 @@ function generate_sitemap() {
          }
     }
     }
+
     // Cities
     if( osc_get_preference('sitemap_cities', 'sitemap_plugin') ) {
     if(osc_count_list_cities() > 0) {
@@ -147,23 +148,23 @@ function generate_sitemap() {
          }
     }
     }
-    
+
     // ITEMS
+    if ($numurl > 0) {
     $mSearch = new Search() ;
-    $mSearch->limit(0,$numurl) ; // fetch number of item for sitemap
+    $mSearch->limit(0, $numurl) ; // fetch max number of items to include in the sitemap
     $aItems = $mSearch->doSearch(); 
-	View::newInstance()->_exportVariableToView('items', $aItems); //exporting our searched item array
+    View::newInstance()->_exportVariableToView('items', $aItems); //exporting our searched items array
 
     if(osc_count_items() > 0) {
         while(osc_has_items()) {
-            
-                    sitemap_add_url(osc_item_url(), substr(osc_item_mod_date()!=''?osc_item_mod_date():osc_item_pub_date(), 0, 10), 'daily');
-            
+
+            sitemap_add_url(osc_item_url(), substr(osc_item_mod_date()!=''?osc_item_mod_date():osc_item_pub_date(), 0, 10), 'daily');
+
         }
     }   
+    }   
 
-    
-    
 
     $end_xml = '</urlset>';
     file_put_contents($filename, $end_xml, FILE_APPEND); //create sitemap.xml 
